@@ -20,9 +20,13 @@ ext.start()
 
 
 def buscacep(p):
+    comando = ":cep "
     text, _, _ = p.packet.read('sii')
-    link = f"https://viacep.com.br/ws/{text}/json/"
-    if text.startswith(text):
+    link = ""
+    if text.startswith(comando):
+        p.is_blocked = True
+        link = f"https://viacep.com.br/ws/{text}/json/"
+        link = link.replace(":cep ", "")
         requisicao = requests.get(link)
         dic_requisicao = requisicao.json()
         p.is_blocked = True
