@@ -24,14 +24,12 @@ def buscacep(p):
     _, text = p.packet.read('is')
     link = ""
     if text.startswith(comando):
-        p.is_blocked = True
         link = f"https://viacep.com.br/ws/{text}/json/"
-        link = link.replace(":cep ", "")
+        link = link.replace(comando, "")
         requisicao = requests.get(link)
-        if requisicao == None:
+        if requisicao.status_code != 200:
             return
         dic_requisicao = requisicao.json()
-        p.is_blocked = True
         talk(dic_requisicao["logradouro"])
         talk(dic_requisicao["localidade"])
         talk(dic_requisicao["uf"])
