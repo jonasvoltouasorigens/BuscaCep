@@ -21,13 +21,15 @@ ext.start()
 
 def buscacep(p):
     comando = ":cep "
-    text, _, _ = p.packet.read('sii')
+    _, text = p.packet.read('is')
     link = ""
     if text.startswith(comando):
         p.is_blocked = True
         link = f"https://viacep.com.br/ws/{text}/json/"
         link = link.replace(":cep ", "")
         requisicao = requests.get(link)
+        if requisicao == None:
+            return
         dic_requisicao = requisicao.json()
         p.is_blocked = True
         talk(dic_requisicao["logradouro"])
@@ -37,4 +39,4 @@ def buscacep(p):
 def talk(message):
     ext.send_to_server(HPacket("Chat", message, 0))
 
-ext.intercept(Direction.TO_SERVER, buscacep, "Chat")
+ext.intercept(Direction.TO_CLIENT, buscacep, "Chat")
